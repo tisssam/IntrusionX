@@ -3,6 +3,8 @@
 
 <head>
 
+	<meta charset="UTF-8">
+
 	<title>IntrusionX Dashboard</title>
 
 	<link rel="stylesheet" href="/static/style.css">
@@ -21,6 +23,7 @@
 
 		<tr>
 			<th>IP</th>
+			<th>Country</th>
 			<th>Attempts</th>
 		</tr>
 
@@ -58,6 +61,7 @@
 				const row = `
 <tr>
 <td>${alert.ip}</td>
+<td>${alert.country}</td>
 <td>${alert.attempts}</td>
 </tr>
 `
