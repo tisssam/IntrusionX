@@ -1,5 +1,11 @@
+# Python
 venv/
 __pycache__/
 *.pyc
+
+# Logs
 *.log
-.env
+
+# OS
+.DS_Store
+Thumbs.db
