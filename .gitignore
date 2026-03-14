@@ -1,0 +1,9 @@
+# Crée le fichier
+touch .gitignore
+
+# Ajoute les fichiers à ignorer
+echo "__pycache__/
+*.pyc
+.vscode/
+venv/
+" > .gitignore
