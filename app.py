@@ -38,7 +38,11 @@ def alerts():
 
         ip = alert["ip"]
 
-        alert["country"] = get_country(ip)
+        info = get_ip_info(ip)
+
+		alert["country"] = info["country"]
+		alert["lat"] = info["lat"]
+		alert["lon"] = info["lon"]
 
         # blocage automatique
         block_ip(ip)
@@ -49,3 +53,26 @@ def alerts():
 if __name__ == "__main__":
 
     app.run(debug=True)
+    
+
+def get_ip_info(ip):
+
+    try:
+
+        response = requests.get(f"http://ip-api.com/json/{ip}")
+
+        data = response.json()
+
+        return {
+            "country": data.get("country", "Unknown"),
+            "lat": data.get("lat", 0),
+            "lon": data.get("lon", 0)
+        }
+
+    except:
+
+        return {
+            "country": "Unknown",
+            "lat": 0,
+            "lon": 0
+        }
