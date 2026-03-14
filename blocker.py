@@ -1,15 +1,34 @@
 import subprocess
+import platform
+
+blocked_ips = set()
 
 def block_ip(ip):
 
-    try:
-        subprocess.run(
-            ["iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"],
-            check=True
-        )
+    if ip in blocked_ips:
+        return
 
-        print(f"[BLOCKED] {ip}")
+    blocked_ips.add(ip)
 
-    except Exception as e:
+    system = platform.system()
 
-        print(f"[ERROR] Failed to block {ip}: {e}")
+    if system == "Linux":
+
+        try:
+
+            subprocess.run(
+                ["iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"],
+                check=True
+            )
+
+            print(f"[BLOCKED] {ip}")
+
+        except Exception as e:
+
+            print(f"[ERROR] Failed to block {ip}: {e}")
+
+    else:
+
+        # simulation pour Windows / Mac
+
+        print(f"[SIMULATION] Blocking IP: {ip}")
