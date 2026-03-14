@@ -17,7 +17,7 @@ def block_ip(ip):
         try:
 
             subprocess.run(
-                ["iptables", "-A", "INPUT", "-s", ip, "-j", "DROP"],
+                ["iptables","-A","INPUT","-s",ip,"-j","DROP"],
                 check=True
             )
 
@@ -28,7 +28,5 @@ def block_ip(ip):
             print(f"[ERROR] Failed to block {ip}: {e}")
 
     else:
-
-        # simulation pour Windows / Mac
 
         print(f"[SIMULATION] Blocking IP: {ip}")

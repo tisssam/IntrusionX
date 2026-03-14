@@ -11,6 +11,10 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 
 <body>
@@ -27,9 +31,7 @@
 			<th>Attempts</th>
 		</tr>
 
-		<tbody id="alert-table">
-
-		</tbody>
+		<tbody id="alert-table"></tbody>
 
 	</table>
 
@@ -37,8 +39,21 @@
 
 	<canvas id="attackChart" width="400" height="200"></canvas>
 
+	<h2>Attack Map</h2>
+
+	<div id="map" style="height:400px;"></div>
+
 	<script>
 		let chart
+
+		let map = L.map('map').setView([20, 0], 2)
+
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 18
+		}).addTo(map)
+
+		let markers = []
+
 
 		async function fetchAlerts() {
 
@@ -52,6 +67,9 @@
 
 			let labels = []
 			let values = []
+
+			markers.forEach(marker => map.removeLayer(marker))
+			markers = []
 
 			data.forEach(alert => {
 
@@ -68,11 +86,26 @@
 
 				table.innerHTML += row
 
+				if (alert.lat && alert.lon) {
+
+					let marker = L.marker([alert.lat, alert.lon]).addTo(map)
+
+					marker.bindPopup(`
+IP: ${alert.ip}<br>
+Country: ${alert.country}<br>
+Attempts: ${alert.attempts}
+`)
+
+					markers.push(marker)
+
+				}
+
 			})
 
 			updateChart(labels, values)
 
 		}
+
 
 		function updateChart(labels, values) {
 
@@ -83,20 +116,14 @@
 			}
 
 			chart = new Chart(ctx, {
-
 				type: 'bar',
-
 				data: {
-
 					labels: labels,
-
 					datasets: [{
 						label: 'Failed SSH Attempts',
 						data: values
 					}]
-
 				}
-
 			})
 
 		}

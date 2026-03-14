@@ -8,53 +8,6 @@ app = Flask(__name__)
 LOG_FILE = "sample_logs/auth.log"
 
 
-def get_country(ip):
-
-    try:
-
-        response = requests.get(f"http://ip-api.com/json/{ip}")
-
-        data = response.json()
-
-        return data.get("country", "Unknown")
-
-    except:
-
-        return "Unknown"
-
-
-@app.route("/")
-def index():
-
-    return render_template("index.html")
-
-
-@app.route("/alerts")
-def alerts():
-
-    data = analyze_logs(LOG_FILE)
-
-    for alert in data:
-
-        ip = alert["ip"]
-
-        info = get_ip_info(ip)
-
-		alert["country"] = info["country"]
-		alert["lat"] = info["lat"]
-		alert["lon"] = info["lon"]
-
-        # blocage automatique
-        block_ip(ip)
-
-    return jsonify(data)
-
-
-if __name__ == "__main__":
-
-    app.run(debug=True)
-    
-
 def get_ip_info(ip):
 
     try:
@@ -76,3 +29,34 @@ def get_ip_info(ip):
             "lat": 0,
             "lon": 0
         }
+
+
+@app.route("/")
+def index():
+
+    return render_template("index.html")
+
+
+@app.route("/alerts")
+def alerts():
+
+    data = analyze_logs(LOG_FILE)
+
+    for alert in data:
+
+        ip = alert["ip"]
+
+        info = get_ip_info(ip)
+
+        alert["country"] = info["country"]
+        alert["lat"] = info["lat"]
+        alert["lon"] = info["lon"]
+
+        block_ip(ip)
+
+    return jsonify(data)
+
+
+if __name__ == "__main__":
+
+    app.run(debug=True)
