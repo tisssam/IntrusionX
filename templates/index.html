@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>IntrusionX Dashboard</title>
+</head>
+
+<body>
+
+	<h1>IntrusionX - Security Monitor</h1>
+
+	<table border="1">
+
+		<tr>
+			<th>IP</th>
+			<th>Attempts</th>
+		</tr>
+
+		<tbody id="alert-table">
+
+		</tbody>
+
+	</table>
+
+	<script>
+		async function fetchAlerts() {
+
+			const response = await fetch('/alerts')
+
+			const data = await response.json()
+
+			const table = document.getElementById("alert-table")
+
+			table.innerHTML = ""
+
+			data.forEach(alert => {
+
+				const row = `
+        <tr>
+        <td>${alert.ip}</td>
+        <td>${alert.attempts}</td>
+        </tr>
+        `
+
+				table.innerHTML += row
+
+			})
+
+		}
+
+		setInterval(fetchAlerts, 3000)
+
+		fetchAlerts()
+	</script>
+
+</body>
+
+</html>
