@@ -2,15 +2,22 @@
 <html>
 
 <head>
+
 	<title>IntrusionX Dashboard</title>
+
 	<link rel="stylesheet" href="/static/style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
 
 	<h1>IntrusionX - Security Monitor</h1>
 
-	<table border="1">
+	<h2>Suspicious IPs</h2>
+
+	<table>
 
 		<tr>
 			<th>IP</th>
@@ -23,7 +30,13 @@
 
 	</table>
 
+	<h2>Attack Graph</h2>
+
+	<canvas id="attackChart" width="400" height="200"></canvas>
+
 	<script>
+		let chart
+
 		async function fetchAlerts() {
 
 			const response = await fetch('/alerts')
@@ -34,16 +47,51 @@
 
 			table.innerHTML = ""
 
+			let labels = []
+			let values = []
+
 			data.forEach(alert => {
 
+				labels.push(alert.ip)
+				values.push(alert.attempts)
+
 				const row = `
-        <tr>
-        <td>${alert.ip}</td>
-        <td>${alert.attempts}</td>
-        </tr>
-        `
+<tr>
+<td>${alert.ip}</td>
+<td>${alert.attempts}</td>
+</tr>
+`
 
 				table.innerHTML += row
+
+			})
+
+			updateChart(labels, values)
+
+		}
+
+		function updateChart(labels, values) {
+
+			const ctx = document.getElementById('attackChart')
+
+			if (chart) {
+				chart.destroy()
+			}
+
+			chart = new Chart(ctx, {
+
+				type: 'bar',
+
+				data: {
+
+					labels: labels,
+
+					datasets: [{
+						label: 'Failed SSH Attempts',
+						data: values
+					}]
+
+				}
 
 			})
 
