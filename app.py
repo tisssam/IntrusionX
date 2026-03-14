@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify
 from log_analysis import analyze_logs
+from blocker import block_ip
 import requests
 
 app = Flask(__name__)
@@ -10,6 +11,7 @@ LOG_FILE = "sample_logs/auth.log"
 def get_country(ip):
 
     try:
+
         response = requests.get(f"http://ip-api.com/json/{ip}")
 
         data = response.json()
@@ -17,6 +19,7 @@ def get_country(ip):
         return data.get("country", "Unknown")
 
     except:
+
         return "Unknown"
 
 
@@ -33,7 +36,12 @@ def alerts():
 
     for alert in data:
 
-        alert["country"] = get_country(alert["ip"])
+        ip = alert["ip"]
+
+        alert["country"] = get_country(ip)
+
+        # blocage automatique
+        block_ip(ip)
 
     return jsonify(data)
 
