@@ -11,8 +11,6 @@ It analyzes SSH authentication logs, detects brute-force attacks, and visualizes
 * Interactive world map of attacking IPs
 * Attack statistics graph
 * Automatic IP blocking (Linux) or simulation (Windows)
-* Pixel-style nostalgic dashboard UI
-* Optional background music
 
 ## Technologies Used
 
